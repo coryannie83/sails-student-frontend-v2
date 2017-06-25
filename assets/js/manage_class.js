@@ -1,40 +1,31 @@
 (function(){
 
-   
-  
+
+
   //function to delete record by settin id on form and then submitting the form
-  //sets value of student id in hidden delete form and submits form
+  //sets value of class id in hidden delete form and submits form
   //not completely ideal but wanted to take advantage of flash messages in sails
   function deleteRecord(record_id){
-    $("#deleteform input[name=student_id]").val(record_id);
+    $("#deleteform input[name=class_id]").val(record_id);
     $("#deleteform").submit();
   }
 
-  function getStudent(record_id){
-    return $.get("http://localhost:1337/student/" + record_id, function(data){
-      console.log("got student");
+  function getclass(record_id){
+    return $.get("http://localhost:1337/class/" + record_id, function(data){
+      console.log("got class");
     })
   }
 
   $(function(){
 
-  $('#studentTable').DataTable({
-        dom: 'Bfrtip',
-        buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-        ],
-         colReorder: true,
-           "scrollX": true
-     });
-
     //initialize variables for items in the DOM we will work with
-    let manageStudentForm = $("#manageStudentForm");
-    let addStudentButton = $("#addStudentButton");
+    let manageClassForm = $("#manageClassForm");
+    let addClassButton = $("#addClassButton");
 
-    //add student button functionality
-    addStudentButton.click(function(){
-      manageStudentForm.attr("action", "/create_student");
-      manageStudentForm.dialog({
+    //add class button functionality
+    addClassButton.click(function(){
+      manageClassForm.attr("action", "/create_class");
+      manageClassForm.dialog({
         title: "Add Record",
         width: 700,
         modal: true,
@@ -44,20 +35,20 @@
           },
           "Submit": function() {
             //function to delete record
-            manageStudentForm.submit()
+            manageClassForm.submit()
           }
         }
       });
     })
 
-  	$("#studentTable").on("click", "#editButton", function(e){
-      let recordId = $(this).data("studentid")
-      manageStudentForm.find("input[name=student_id]").val(recordId);
-      manageStudentForm.attr("action", "/update_student");
-      let student = getStudent(recordId);
+  	$("#classTable").on("click", "#editButton", function(e){
+      let recordId = $(this).data("class_id")
+      manageClassForm.find("input[name=class_id]").val(recordId);
+      manageClassForm.attr("action", "/update_class");
+      let class = getclass(recordId);
 
-      //populate form when api call is done (after we get student to edit)
-      student.done(function(data){
+      //populate form when api call is done (after we get class to edit)
+      class.done(function(data){
         $.each(data, function(name, val){
             var $el = $('[name="'+name+'"]'),
                 type = $el.attr('type');
@@ -75,7 +66,7 @@
         });
       })
 
-      manageStudentForm.dialog({
+      manageClassForm.dialog({
         title: "Add Record",
         width: 700,
         modal: true,
@@ -85,15 +76,15 @@
           },
           Submit: function() {
             //function to delete record
-            manageStudentForm.submit()
+            manageClassForm.submit()
           }
         }
       });
     })
 
 
-    $("#studentTable").on("click", "#deleteButton", function(e){
-      let recordId = $(this).data("studentid")
+    $("#classTable").on("click", "#deleteButton", function(e){
+      let recordId = $(this).data("class_id")
       $("#deleteConfirm").dialog({
         title: "Confirm Delete",
         modal: true,
@@ -101,7 +92,7 @@
           Cancel: function() {
             $( this ).dialog( "close" );
           },
-          "Delete Student": function() {
+          "Delete class": function() {
             //function to delete record
             deleteRecord(recordId);
           }
